@@ -50,21 +50,12 @@ namespace FoneNumSort
             ClearFilies();
         }
 
-        private void BtnNew_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog newData = new OpenFileDialog();
-            newData.ShowDialog();
-            PathNewFile.Content = "Путь до нового файла:\n" + newData.FileName;
-            pathNew = newData.FileName;
-        }
-
-
         private void ClearFilies()
         {
             for (int j = 0; j < dirs.Count; j++)
             {
                 List<string> ClearingList = new List<string>(File.ReadAllLines(dirs[j], Encoding.Default));
-                if (ClearingList[0][0]=='7')
+                if (ClearingList[0][0] == '7')
                 {
                     return;
                 }
@@ -125,9 +116,14 @@ namespace FoneNumSort
             CountUniqueNums = 0;
             CountNewNums = 0;
             List<string> Newlist = new List<string>();
-            for (int j = 1; j < dirs.Count; j++)
+            OutText.Text += "Имя файла ----- Количество номеров ----- Количество новых\n";
+            for (int j = 0; j < dirs.Count; j++)
             {
+                CountUniqueNums = 0;
+                CountNewNums = 0;
                 bool check = true;
+
+
                 for (int k = 0; k < j; k++)
                 {
                     // создание таблицы из файла K
@@ -135,12 +131,12 @@ namespace FoneNumSort
                     Chain_method BaseList = new Chain_method(100, 3, true);
 
                     foreach (var VARIABLE in BaseListTmp)
-                    {
                         BaseList.Add(VARIABLE);
-                    }
                     /// Конец создания
+
                     if (check)
                     {
+                        check = false;
                         Newlist.Clear();
                         Newlist = new List<string>(File.ReadAllLines(dirs[j], Encoding.Default));
                         CountUniqueNums = Newlist.Count;
@@ -156,12 +152,18 @@ namespace FoneNumSort
 
                     }
 
-                    CountNewNums = Newlist.Count;
+                }
+                CountNewNums = Newlist.Count;
+                if (j == 0)
+                {
+                    Newlist.Clear();
+                    Newlist = new List<string>(File.ReadAllLines(dirs[j], Encoding.Default));
+                    CountUniqueNums = Newlist.Count;
+                    CountNewNums = 0;
                 }
 
-                OutText.Text += CountUniqueNums + " " + CountNewNums + '\n';
+                OutText.Text += dirs[j] + " " + CountUniqueNums + " " + CountNewNums + '\n';
             }
         }
-
     }
 }
