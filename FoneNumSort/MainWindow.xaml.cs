@@ -31,6 +31,8 @@ namespace FoneNumSort
         private List<string> dirs;
         private int CountUniqueNums = 0;
         private int CountNewNums = 0;
+        private List<string> Newlist;
+        private bool check;
         public MainWindow()
         {
             counter = 0;
@@ -47,7 +49,7 @@ namespace FoneNumSort
 
             dirs = new List<string>(Directory.GetFiles(pathData));
 
-            
+
         }
 
         private void ClearFilies()
@@ -111,50 +113,55 @@ namespace FoneNumSort
             }
         }
 
+        int ForNum(int j)
+        {
+            for (int k = 0; k < j; k++)
+            {
+                // создание таблицы из файла K
+                List<string> BaseListTmp = new List<string>(File.ReadAllLines(dirs[k], Encoding.Default));
+                Chain_method BaseList = new Chain_method(100, 3, true);
+
+                foreach (var VARIABLE in BaseListTmp)
+                    BaseList.Add(VARIABLE);
+                /// Конец создания
+
+                if (check)
+                {
+                    check = false;
+                    Newlist.Clear();
+                    Newlist = new List<string>(File.ReadAllLines(dirs[j], Encoding.Default));
+                    CountUniqueNums = Newlist.Count;
+                }
+
+                for (int i = 0; i < Newlist.Count; i++)
+                    if (BaseList.Search(Newlist[i]).Found)
+                    {
+                        Newlist.RemoveAt(i);
+                        i = 0;
+                    }
+            }
+
+            return CountUniqueNums;
+        }
         private void Start_Click(object sender, RoutedEventArgs e)
         {
             ClearFilies();
 
             CountUniqueNums = 0;
             CountNewNums = 0;
-            List<string> Newlist = new List<string>();
+            Newlist = new List<string>();
+
             OutText.Text += "Имя файла ----- Количество номеров ----- Количество новых\n";
             for (int j = 0; j < dirs.Count; j++)
             {
                 CountUniqueNums = 0;
                 CountNewNums = 0;
-                bool check = true;
+                check = true;
+                //====
 
+                ForNum(j);
 
-                for (int k = 0; k < j; k++)
-                {
-                    // создание таблицы из файла K
-                    List<string> BaseListTmp = new List<string>(File.ReadAllLines(dirs[k], Encoding.Default));
-                    Chain_method BaseList = new Chain_method(100, 3, true);
-
-                    foreach (var VARIABLE in BaseListTmp)
-                        BaseList.Add(VARIABLE);
-                    /// Конец создания
-
-                    if (check)
-                    {
-                        check = false;
-                        Newlist.Clear();
-                        Newlist = new List<string>(File.ReadAllLines(dirs[j], Encoding.Default));
-                        CountUniqueNums = Newlist.Count;
-                    }
-
-                    for (int i = 0; i < Newlist.Count; i++)
-                    {
-                        if (BaseList.Search(Newlist[i]).Found)
-                        {
-                            Newlist.RemoveAt(i);
-                            i = 0;
-                        }
-
-                    }
-
-                }
+                //========Task.Run<int>(() => ForNum(j));
                 CountNewNums = Newlist.Count;
                 if (j == 0)
                 {
@@ -163,9 +170,11 @@ namespace FoneNumSort
                     CountUniqueNums = Newlist.Count;
                     CountNewNums = 0;
                 }
-
+                
                 OutText.Text += dirs[j] + " " + CountUniqueNums + " " + CountNewNums + '\n';
+                Newlist.Clear();
             }
+            System.Windows.Forms.MessageBox.Show("Готово!");
         }
     }
 }

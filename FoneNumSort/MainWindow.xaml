@@ -4,12 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="MainWindow" Height="504.966" Width="652.697">
+        Title="MainWindow" Height="364.136" Width="599.788">
     <Grid>
-        <Button x:Name="BtnBase" Content="Выбор файла" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top" Width="100" Click="BtnBase_Click"/>
-        <Label x:Name="PathBaseFile" Content="Путь до базового файла:" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="474" Height="50"/>
+        <Button x:Name="BtnBase" Content="Выбор пути" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top" Width="100" Click="BtnBase_Click"/>
+        <Label x:Name="PathBaseFile" Content="Путь до файлов:" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="474" Height="50"/>
         <Button x:Name="Start" Content="Start" HorizontalAlignment="Left" Margin="10,295,0,0" VerticalAlignment="Top" Width="100" Click="Start_Click"/>
-        <TextBox x:Name="OutText" HorizontalAlignment="Left" Height="202" Margin="0,88,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="577"/>
+        <TextBox x:Name="OutText" HorizontalAlignment="Left" Height="202" Margin="5,88,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="577"/>
 
     </Grid>
 </Window>
