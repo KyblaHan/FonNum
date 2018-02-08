@@ -47,7 +47,7 @@ namespace FoneNumSort
 
             dirs = new List<string>(Directory.GetFiles(pathData));
 
-            ClearFilies();
+            
         }
 
         private void ClearFilies()
@@ -113,6 +113,8 @@ namespace FoneNumSort
 
         private void Start_Click(object sender, RoutedEventArgs e)
         {
+            ClearFilies();
+
             CountUniqueNums = 0;
             CountNewNums = 0;
             List<string> Newlist = new List<string>();
