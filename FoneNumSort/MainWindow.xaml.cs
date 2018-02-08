@@ -46,8 +46,8 @@ namespace FoneNumSort
             pathData = baseData.SelectedPath;
 
             dirs = new List<string>(Directory.GetFiles(pathData));
-            ClearFilies();
 
+            ClearFilies();
         }
 
         private void BtnNew_Click(object sender, RoutedEventArgs e)
@@ -64,6 +64,10 @@ namespace FoneNumSort
             for (int j = 0; j < dirs.Count; j++)
             {
                 List<string> ClearingList = new List<string>(File.ReadAllLines(dirs[j], Encoding.Default));
+                if (ClearingList[0][0]=='7')
+                {
+                    return;
+                }
 
                 bool check_1 = false;
 
