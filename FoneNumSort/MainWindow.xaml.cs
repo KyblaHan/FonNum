@@ -109,49 +109,45 @@ namespace FoneNumSort
                         i = 0;
                     }
                 }
-                File.WriteAllLines(dirs[j], ClearingList);
+                File.WriteAllLines(dirs[j], ClearingList);               
             }
         }
 
-        int ForNum(int j)
+        Task ForNum(int j)
         {
-            for (int k = 0; k < j; k++)
+            return Task.Run(() =>
             {
-                // создание таблицы из файла K
-                List<string> BaseListTmp = new List<string>(File.ReadAllLines(dirs[k], Encoding.Default));
-                Chain_method BaseList = new Chain_method(100, 3, true);
-
-                foreach (var VARIABLE in BaseListTmp)
-                    BaseList.Add(VARIABLE);
-                /// Конец создания
-
-                if (check)
+                for (int k = 0; k < j; k++)
                 {
-                    check = false;
-                    Newlist.Clear();
-                    Newlist = new List<string>(File.ReadAllLines(dirs[j], Encoding.Default));
-                    CountUniqueNums = Newlist.Count;
-                }
+                    // создание таблицы из файла K
+                    List<string> BaseListTmp = new List<string>(File.ReadAllLines(dirs[k], Encoding.Default));
+                    Chain_method BaseList = new Chain_method(100, 3, true);
 
-                for (int i = 0; i < Newlist.Count; i++)
-                    if (BaseList.Search(Newlist[i]).Found)
+                    foreach (var VARIABLE in BaseListTmp)
+                        BaseList.Add(VARIABLE);
+                    /// Конец создания
+
+                    if (check)
                     {
-                        Newlist.RemoveAt(i);
-                        i = 0;
+                        check = false;
+                        Newlist.Clear();
+                        Newlist = new List<string>(File.ReadAllLines(dirs[j], Encoding.Default));
+                        CountUniqueNums = Newlist.Count;
                     }
-            }
 
-            return CountUniqueNums;
+                    for (int i = 0; i < Newlist.Count; i++)
+                        if (BaseList.Search(Newlist[i]).Found)
+                        {
+                            Newlist.RemoveAt(i);
+                            i = 0;
+                        }
+                }
+            });
         }
-        private void Start_Click(object sender, RoutedEventArgs e)
+
+        async Task DisplayRes()
         {
-            ClearFilies();
-
-            CountUniqueNums = 0;
-            CountNewNums = 0;
-            Newlist = new List<string>();
-
-            OutText.Text += "Имя файла ----- Количество номеров ----- Количество новых\n";
+            
             for (int j = 0; j < dirs.Count; j++)
             {
                 CountUniqueNums = 0;
@@ -159,7 +155,7 @@ namespace FoneNumSort
                 check = true;
                 //====
 
-                ForNum(j);
+                await ForNum(j);
 
                 //========Task.Run<int>(() => ForNum(j));
                 CountNewNums = Newlist.Count;
@@ -170,11 +166,25 @@ namespace FoneNumSort
                     CountUniqueNums = Newlist.Count;
                     CountNewNums = 0;
                 }
-                
+
                 OutText.Text += dirs[j] + " " + CountUniqueNums + " " + CountNewNums + '\n';
                 Newlist.Clear();
+                ProgBar.Value++;
             }
             System.Windows.Forms.MessageBox.Show("Готово!");
+        }
+        private void Start_Click(object sender, RoutedEventArgs e)
+        {
+            ProgBar.Maximum = dirs.Count;
+            ClearFilies();
+
+            CountUniqueNums = 0;
+            CountNewNums = 0;
+            Newlist = new List<string>();
+
+            OutText.Text += "Имя файла ----- Количество номеров ----- Количество новых\n";
+            DisplayRes().GetAwaiter();
+           
         }
     }
 }
