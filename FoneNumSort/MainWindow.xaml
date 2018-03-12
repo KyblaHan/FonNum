@@ -11,6 +11,7 @@
         <Button x:Name="Start" Content="Start" HorizontalAlignment="Left" Margin="10,287,0,0" VerticalAlignment="Top" Width="100" Click="Start_Click"/>
         <TextBox x:Name="OutText" HorizontalAlignment="Left" Height="202" Margin="10,80,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="572"/>
         <ProgressBar x:Name="ProgBar" HorizontalAlignment="Left" Height="20" Margin="115,287,0,0" VerticalAlignment="Top" Width="467"/>
+        <Button x:Name="Err_btn" Content="Очистка по одному" HorizontalAlignment="Left" Margin="460,55,0,0" VerticalAlignment="Top" Width="122" Click="Err_btn_Click"/>
 
     </Grid>
 </Window>

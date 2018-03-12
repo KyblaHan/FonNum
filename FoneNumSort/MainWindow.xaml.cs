@@ -25,6 +25,7 @@ namespace FoneNumSort
     public partial class MainWindow : Window
     {
         private string pathData;
+        private string pathData2;
         private string pathNew;
         private int counter;
         private string tmpOut;
@@ -41,6 +42,7 @@ namespace FoneNumSort
 
         private void BtnBase_Click(object sender, RoutedEventArgs e)
         {
+
             FolderBrowserDialog baseData = new FolderBrowserDialog();
             //OpenFileDialog baseData = new OpenFileDialog();
             baseData.ShowDialog();
@@ -49,14 +51,77 @@ namespace FoneNumSort
 
             dirs = new List<string>(Directory.GetFiles(pathData));
 
+        }
+        private void Err_btn_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog newDialog = new OpenFileDialog();
+            newDialog.ShowDialog();
+            pathData2 = newDialog.FileName;
+            ClearFilies(pathData2);
+            System.Windows.Forms.MessageBox.Show("Готово! Файл очищен.");
+        }
+        private void ClearFilies(string dir)
+        {
+
+            List<string> ClearingList = new List<string>(File.ReadAllLines(dir, Encoding.Default));
+
+            if (ClearingList[0][0] == '7')
+            {
+                return;
+            }
+
+            bool check_1 = false;
+
+            int firstIndex = -1;
+            int lastIndex = -1;
+
+            // очистка от всего лишнего
+            for (var i = 0; i < ClearingList.Count; i++)
+            {
+                if (ClearingList[i].IndexOf("Дата") >= 0)
+                {
+                    firstIndex = i;
+                    // check_1 = true;
+                    break;
+                }
+            }
+            for (var i = firstIndex; i < ClearingList.Count; i++)
+            {
+                if (ClearingList[i].IndexOf("ИТОГО:") >= 0)
+                {
+                    lastIndex = i;
+                    break;
+                }
+            }
+            ClearingList.RemoveRange(lastIndex, (ClearingList.Count - lastIndex));
+            ClearingList.RemoveRange(0, firstIndex + 1);
+
+            // удаление всего кроме номеров
+            for (var i = 0; i < ClearingList.Count; i++)
+            {
+                ClearingList[i] = ClearingList[i].Remove(0, 20);
+                ClearingList[i] = ClearingList[i].Remove(ClearingList[i].IndexOf(' '));
+            }
+
+            ClearingList = ClearingList.Distinct().ToList();
+            //Newlist.RemoveAll(x => x[0] != '7');
+            for (int i = 0; i < ClearingList.Count; i++)
+            {
+                if (!ClearingList[i].Contains('7'))
+                {
+                    ClearingList.RemoveAt(i);
+                    i = 0;
+                }
+            }
+            File.WriteAllLines(dir, ClearingList);
 
         }
-
         private void ClearFilies()
         {
             for (int j = 0; j < dirs.Count; j++)
             {
                 List<string> ClearingList = new List<string>(File.ReadAllLines(dirs[j], Encoding.Default));
+
                 if (ClearingList[0][0] == '7')
                 {
                     return;
@@ -70,10 +135,10 @@ namespace FoneNumSort
                 // очистка от всего лишнего
                 for (var i = 0; i < ClearingList.Count; i++)
                 {
-                    if (ClearingList[i].IndexOf("Дата") >= 0 && check_1 == false)
+                    if (ClearingList[i].IndexOf("Дата") >= 0)
                     {
                         firstIndex = i;
-                        check_1 = true;
+                        // check_1 = true;
                         break;
                     }
                 }
@@ -87,10 +152,6 @@ namespace FoneNumSort
                 }
                 ClearingList.RemoveRange(lastIndex, (ClearingList.Count - lastIndex));
                 ClearingList.RemoveRange(0, firstIndex + 1);
-
-                firstIndex = -1;
-                lastIndex = -1;
-                check_1 = false;
 
                 // удаление всего кроме номеров
                 for (var i = 0; i < ClearingList.Count; i++)
@@ -109,7 +170,7 @@ namespace FoneNumSort
                         i = 0;
                     }
                 }
-                File.WriteAllLines(dirs[j], ClearingList);               
+                File.WriteAllLines(dirs[j], ClearingList);
             }
         }
 
@@ -147,7 +208,7 @@ namespace FoneNumSort
 
         async Task DisplayRes()
         {
-            
+
             for (int j = 0; j < dirs.Count; j++)
             {
                 CountUniqueNums = 0;
@@ -175,6 +236,8 @@ namespace FoneNumSort
         }
         private void Start_Click(object sender, RoutedEventArgs e)
         {
+            OutText.Clear();
+            ProgBar.Value = 0;
             ProgBar.Maximum = dirs.Count;
             ClearFilies();
 
@@ -184,7 +247,9 @@ namespace FoneNumSort
 
             OutText.Text += "Имя файла ----- Количество номеров ----- Количество новых\n";
             DisplayRes().GetAwaiter();
-           
+
         }
+
+
     }
 }
